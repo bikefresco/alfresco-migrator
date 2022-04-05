@@ -30,17 +30,22 @@ services:
       - alfresco-migrator-acs-volume:/usr/local/tomcat/alf_data
     depends_on:
       - alfresco-migrator-postgres
-  alfresco-migrator-postgres:
-    image: postgres:9.6
-    environment:
-      POSTGRES_DB: alfresco
-      POSTGRES_USER: alfresco
-      POSTGRES_PASSWORD: alfresco
-    command: postgres -c max_connections=300 -c log_min_messages=LOG
-    ports:
-      - "${postgres.port}:5432"
+
+  mariadb:
+    image: mariadb:10.7.3
+    container_name: mariadb
     volumes:
-      - alfresco-migrator-db-volume:/var/lib/postgresql/data
+      - ./mariainit:/docker-entrypoint-initdb.d
+      - alfresco-migrator-db-volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=alfresco
+      - MYSQL_USER=alfresco
+      - MYSQL_PASSWORD=alfresco
+    command: [mysqld, --character-set-server=utf8, --collation-server=utf8_bin, --wait_timeout=28800]
+    ports:
+      - "3306:3306"
+
+
   alfresco-migrator-ass:
     image: alfresco/alfresco-search-services:2.0.3
     environment:
