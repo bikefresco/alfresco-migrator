@@ -5,9 +5,6 @@ ARG USERNAME=${alfresco.platform.docker.user}
 
 USER root
 
-RUN rm -rf /etc/localtime
-RUN ln -s /usr/share/zoneinfo/Europe/Bratislava /etc/localtime
-
 #Copy Mysql connector to tomcat/lib for Maria Db connections
 RUN curl https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar > $TOMCAT_DIR/lib/mysql-connector-java-5.1.49.jar
 
