@@ -9,8 +9,6 @@ else
 fi
 
 start() {
-    docker volume create alfresco-migrator-acs-volume
-    docker volume create alfresco-migrator-db-volume
     docker volume create alfresco-migrator-ass-volume
     docker-compose -f "$COMPOSE_FILE_PATH" up --build -d
 }
@@ -30,8 +28,6 @@ down() {
 }
 
 purge() {
-    docker volume rm -f alfresco-migrator-acs-volume
-    docker volume rm -f alfresco-migrator-db-volume
     docker volume rm -f alfresco-migrator-ass-volume
 }
 

@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  mariadb:
+    image: mariadb:10.7.3
+    container_name: mariadb
+    volumes:
+      - ./mariainit:/docker-entrypoint-initdb.d
+      - alfresco-migrator-db-volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=alfresco
+      - MYSQL_USER=alfresco
+      - MYSQL_PASSWORD=alfresco
+    command: [mysqld, --character-set-server=utf8, --collation-server=utf8_bin, --wait_timeout=28800]
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+
+  alfresco-migrator-activemq:
+    image: alfresco/alfresco-activemq:5.16.4-jre11-centos7
+    container_name: activemq
+    ports:
+      - "8161:8161" # Web Console
+      - "5672:5672" # AMQP
+      - "61616:61616" # OpenWire
+      - "61613:61613" # STOMP
+    networks:
+      - default
+
+volumes:
+  alfresco-migrator-db-volume:
+    external: true
+
+networks:
+  default:
+    driver: bridge
+
