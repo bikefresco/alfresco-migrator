@@ -17,11 +17,15 @@ doDockerCompose() {
 start() {
   docker volume create alfresco-migrator-db-volume
   docker volume create alfresco-migrator-acs-volume
+  docker volume create alfresco-migrator-acs-log-volume
+  docker volume create alfresco-migrator-acs-backup-volume
 }
 
 purge() {
   docker volume rm -f alfresco-migrator-db-volume
   docker volume rm -f alfresco-migrator-acs-volume
+  docker volume rm -f alfresco-migrator-acs-log-volume
+  docker volume rm -f alfresco-migrator-acs-backup-volume
 }
 
 case "$1" in

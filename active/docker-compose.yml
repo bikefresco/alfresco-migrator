@@ -27,8 +27,26 @@ services:
     networks:
       - default
 
+  cron:
+    container_name: cron
+    build:
+      dockerfile: ./Dockerfile
+      context: ./cron-logrotate-backup
+    volumes:
+      - alfresco-migrator-acs-log-volume:/usr/local/tomcat/logs
+      - alfresco-migrator-acs-volume:/usr/local/tomcat/alf_data
+      - alfresco-migrator-acs-backup-volume:/usr/local/tomcat/backup
+    networks:
+      - default
+
 volumes:
   alfresco-migrator-db-volume:
+    external: true
+  alfresco-migrator-acs-volume:
+    external: true
+  alfresco-migrator-acs-log-volume:
+    external: true
+  alfresco-migrator-acs-backup-volume:
     external: true
 
 networks:

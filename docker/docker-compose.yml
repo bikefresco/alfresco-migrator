@@ -31,6 +31,7 @@ services:
       - "${acs.debug.port}:8888"
     volumes:
       - alfresco-migrator-acs-volume:/usr/local/tomcat/alf_data
+      - alfresco-migrator-acs-log-volume:/usr/local/tomcat/logs
     depends_on:
       - alfresco-migrator-postgres
     networks:
@@ -59,6 +60,8 @@ services:
 
 volumes:
   alfresco-migrator-acs-volume:
+    external: true
+  alfresco-migrator-acs-log-volume:
     external: true
   alfresco-migrator-ass-volume:
     external: true
