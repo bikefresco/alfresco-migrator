@@ -41,6 +41,6 @@ purge)
   purge
   ;;
 *)
-  echo "Usage: $0 {up|down}"
+  echo "Usage: $0 {up|down|purge}"
   ;;
 esac
