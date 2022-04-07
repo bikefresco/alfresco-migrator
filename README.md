@@ -1,3 +1,84 @@
+
+# Backup and restore Alfresco from Docker Instance
+
+### Based on Alfresco SDK with build tools: Maven, Java 11, Docker, GitBash
+
+#### Only reason using Alfresco SDK is replacement of Postgres database with Maria DB
+
+First start Maria Db, Activemq, with build of cron-logrotate-backup helping container with backup volume.
+
+    ./first-last.sh up
+
+Start Alfresco Instance with SDK build, changes to SDK docker compose are related to database change and docker volumes.
+
+    ./run.sh build_start
+
+Open Alfresco in browser with url [http://localhost:8180/share/](http://localhost:8180/share/) user admin, password admin, spend a little time creating sites 
+uploading documents for later review of restored backup data.
+
+Stop Alfresco with Ctrl-C and purge Solr volume data, Alfresco repository volume and Maria data volume are not purged.   
+
+    ./run.sh purge
+
+Run backup of Sql database and Alfresco data file repository, script will generate .sql and .gz in local file system outside of docker containers.
+
+    ./sql-dump.sh  
+
+Backup files are saved on local file system, now it is safe to purge all docker containers
+
+    ./first-last.sh purge
+
+Verify sql backup file is present in local file system
+
+    ls -l *.sql
+
+Verify repository backup file is present in local file system
+
+    ls -l backup/*.gz
+
+## Restore Backup steps
+
+Start Maria DB and create volumes where backup data will be restored.
+
+    ./first-last.sh up    
+
+Verify Alfresco database exist.
+
+    docker exec mariadb mysql --user=alfresco --password=alfresco --port=3306 --protocol=TCP --database alfresco -e "SHOW DATABASES;"
+
+Verify Alfresco database is empty.
+
+    docker exec mariadb mysql --user=alfresco --password=alfresco --port=3306 --protocol=TCP --database alfresco -e "SHOW TABLES;"
+
+Restore Alfresco Sql database
+
+    ./restore-dump.sh
+
+Verify Alfresco Sql tables are created
+
+    docker exec mariadb mysql --user=alfresco --password=alfresco --port=3306 --protocol=TCP --database alfresco -e "SHOW TABLES;"
+
+Verify Alfresco data file system is empty 
+
+    docker exec cron ls -l usr/local/tomcat/alf_data
+
+Restore Alfresco data from backup file
+
+    ./data-restore.sh
+
+Verify Alfresco data file system is not empty
+
+    docker exec cron ls -l usr/local/tomcat/alf_data
+
+Start Alfresco instance again
+
+    ./run.sh build_start
+
+Open Alfresco [http://localhost:8180/share/](http://localhost:8180/share/) and verify backup data are restored.
+
+
+## Generated Alfresco SDK instructions
+
 # Alfresco AIO Project - SDK 4.4
 
 This is an All-In-One (AIO) project for Alfresco SDK 4.4.

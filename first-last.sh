@@ -6,7 +6,7 @@ getComposeFileFromServiceName() {
 
 doDockerComposeUp() {
   SERVICE_DOCKER_FILE_NAME=$(getComposeFileFromServiceName "$1")
-  docker compose -f "$SERVICE_DOCKER_FILE_NAME" --project-name "$1" --env-file ${PWD}/"$1"/.env up -d
+  docker compose -f "$SERVICE_DOCKER_FILE_NAME" --project-name "$1" --env-file ${PWD}/"$1"/.env up --build -d
 }
 
 doDockerCompose() {
